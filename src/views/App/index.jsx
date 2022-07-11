@@ -10,16 +10,25 @@ export const generateId = () => (
 );
 
 export const App = () => {
-  const tasks = [{
-    id: 12312,
-    title: 'sadfdas'
-  }];
+  const [tasks, setTask] = useState([]);
 
   return (
     <article className={styles.article}>
       <h1 className={styles.articleTitle}>To Do App</h1>
       <section className={styles.articleSection}>
-          <InputPlus />
+          <InputPlus
+            onAdd={(title) => {
+              if (title) {
+                setTask([
+                  ...tasks,
+                  {
+                  id: generateId(),
+                  title,
+                }
+              ])
+              }
+          }}
+          />
       </section>
       <section className={styles.articleSection}>
         {tasks.length <= 0 && (
@@ -28,7 +37,20 @@ export const App = () => {
         {tasks.map((task) => (
           <InputTask
             key={task.id}
+            id={task.id}
             title={task.title}
+            onDone={(id) => {
+              setTask(tasks.filter((task) => task.id !== id))
+            }}
+            onRemove={(id) => (
+              setTask(tasks.filter((task) => task.id !== id))
+            )}
+            onEdited={(id, value) => (
+              setTask(tasks.map((task) => task.id === id ? {
+                ...task,
+                title: value,
+              } : task))
+            )}
           />
         ))}
       </section>
